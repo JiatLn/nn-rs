@@ -1,6 +1,6 @@
 use crate::{deriv_sigmoid, mse_loss, rand_normal, sigmoid};
 
-#[derive(Clone, Debug)]
+#[derive(Debug)]
 pub struct NeuronWork<T> {
     weights: Vec<T>,
     bias: Vec<T>,
@@ -78,10 +78,7 @@ impl NeuronWork<f64> {
             }
 
             if epoch % 100 == 0 {
-                let y_preds = data
-                    .iter()
-                    .map(|x| self.clone().feedforward(x))
-                    .collect::<Vec<_>>();
+                let y_preds = data.iter().map(|x| self.feedforward(x)).collect::<Vec<_>>();
                 println!(
                     "Epoch {:>4} loss: {:.4}",
                     epoch,
