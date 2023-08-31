@@ -20,7 +20,7 @@ impl NeuronWork<f64> {
         }
     }
     pub fn feedforward(&self, x: &[f64]) -> f64 {
-        let h1: f64 = sigmoid(self.weights[0] * x[0] + self.weights[1] * x[1] + self.bias[0]);
+        let h1 = sigmoid(self.weights[0] * x[0] + self.weights[1] * x[1] + self.bias[0]);
         let h2 = sigmoid(self.weights[2] * x[0] + self.weights[3] * x[1] + self.bias[1]);
 
         sigmoid(self.weights[4] * h1 + self.weights[5] * h2 + self.bias[2])
