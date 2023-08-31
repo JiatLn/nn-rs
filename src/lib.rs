@@ -1,4 +1,4 @@
 mod nn;
 mod utils;
 
-pub use nn::Neuron;
+pub use nn::{Neuron, NeuronWork};
