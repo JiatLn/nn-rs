@@ -13,9 +13,6 @@ impl<T> Neuron<T> {
 
 impl Neuron<f64> {
     pub fn feedforward(self, inputs: &[f64]) -> f64 {
-        if inputs.len() != self.weights.len() {
-            return 0.0;
-        }
         let total = dot(&self.weights, inputs) + self.bias;
         sigmoid(total)
     }
