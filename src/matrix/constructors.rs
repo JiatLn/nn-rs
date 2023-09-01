@@ -1,15 +1,14 @@
 use crate::Matrix;
 
 impl Matrix<f64> {
-    pub fn from_shape_vec(vec: Vec<u8>, shape: (usize, usize, usize)) -> Vec<Self> {
+    pub fn from_shape_vec(vec: &Vec<u8>, shape: (usize, usize, usize)) -> Vec<Self> {
         if vec.len() != shape.0 * shape.1 * shape.2 {
             panic!("shape not match!");
         }
-        let size = shape.1 * shape.2;
         (0..shape.0)
             .map(|i| {
-                let start = i * size;
-                let end = (i + 1) * size;
+                let start = i * shape.1 * shape.2;
+                let end = (i + 1) * shape.1 * shape.2;
                 let vec_f64 = vec[start..end]
                     .to_vec()
                     .iter()

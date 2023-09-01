@@ -2,7 +2,7 @@ mod constructors;
 
 use crate::{zeros, Vec2};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Matrix<T>(pub Vec2<T>);
 
 impl<T> Matrix<T> {

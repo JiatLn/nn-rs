@@ -21,7 +21,7 @@ impl ConvLayer {
         }
     }
 
-    pub fn forward(self, input: Matrix<f64>) -> Vec<Matrix<f64>> {
+    pub fn forward(self, input: &Matrix<f64>) -> Vec<Matrix<f64>> {
         let (h, w) = input.shape();
         if h < 2 || w < 2 {
             panic!("The input shape must be greater then 2x2");
@@ -62,7 +62,7 @@ mod tests {
             vec![1.0, 2.0, 4.0, 3.0],
             vec![6.0, 8.0, 7.0, 9.0],
         ]);
-        let output = conv.forward(input);
+        let output = conv.forward(&input);
 
         dbg!(&output[0]);
     }
