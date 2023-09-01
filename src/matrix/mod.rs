@@ -1,9 +1,10 @@
 mod constructors;
+mod fmt;
 mod operation;
 
 use crate::{zeros, Vec2};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq)]
 pub struct Matrix<T>(pub Vec2<T>);
 
 impl<T> Matrix<T> {
