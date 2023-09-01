@@ -3,7 +3,7 @@ mod matrix;
 mod nn;
 mod utils;
 
-pub use cnn::ConvLayer;
+pub use cnn::{ConvLayer, MaxPoolLayer};
 pub use matrix::Matrix;
 pub use nn::{Neuron, NeuronWork};
 pub use utils::*;

@@ -1,14 +1,16 @@
 mod constructors;
+mod operation;
 
 use crate::{zeros, Vec2};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Matrix<T>(pub Vec2<T>);
 
 impl<T> Matrix<T> {
     pub fn new(vec: Vec2<T>) -> Self {
         Matrix(vec)
     }
+    /// (height, width)
     pub fn shape(&self) -> (usize, usize) {
         (self.0.len(), self.0[0].len())
     }
@@ -20,14 +22,6 @@ impl<T> Matrix<T> {
 impl Matrix<f64> {
     pub fn get(&self, row: usize, col: usize) -> f64 {
         self.0[row][col]
-    }
-    pub fn drivide(mut self, divider: f64) -> Self {
-        self.0 = self
-            .0
-            .iter()
-            .map(|row| row.iter().map(|value| value / divider).collect())
-            .collect();
-        self
     }
     pub fn new_zero(width: usize, height: usize) -> Self {
         Matrix::new((0..height).map(|_| zeros(width)).collect())
