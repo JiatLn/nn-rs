@@ -1,5 +1,6 @@
 mod constructors;
 mod fmt;
+mod iter;
 mod operation;
 
 use crate::{zeros, Vec2};
