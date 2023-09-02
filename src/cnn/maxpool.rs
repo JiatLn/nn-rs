@@ -17,7 +17,7 @@ impl MaxPoolLayer {
         }
 
         let mut output = (0..filter_num)
-            .map(|_| Matrix::new_zero(w / 2, h / 2))
+            .map(|_| Matrix::new_zero(h / 2, w / 2))
             .collect::<Vec<_>>();
 
         for filter_idx in 0..filter_num {

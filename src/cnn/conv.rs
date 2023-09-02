@@ -1,20 +1,20 @@
-use crate::{randn_martix, Matrix, Vec3};
+use crate::Matrix;
 
 #[derive(Debug)]
 pub struct ConvLayer {
     filter_size: usize,
     filter_num: usize,
-    filters: Vec3<f64>,
+    filters: Vec<Matrix<f64>>,
 }
 
 impl ConvLayer {
     pub fn new(filter_size: usize, filter_num: usize) -> Self {
         let filters = (0..filter_num)
             .map(|_| {
-                Matrix::new(randn_martix(filter_size, filter_size))
-                    .drivide((filter_size * filter_size) as f64)
+                Matrix::new_randn(filter_size, filter_size) / (filter_size * filter_size) as f64
             })
             .collect();
+
         ConvLayer {
             filter_size,
             filter_num,
@@ -28,7 +28,7 @@ impl ConvLayer {
             panic!("The input shape must be greater then 2x2");
         }
         let mut output: Vec<_> = (0..self.filter_num)
-            .map(|_| Matrix::new_zero(w - 2, h - 2))
+            .map(|_| Matrix::new_zero(h - 2, w - 2))
             .collect();
 
         for i in 0..h - 2 {
@@ -48,7 +48,6 @@ impl ConvLayer {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::*;
 
     #[test]
     fn test_conv_3x3() {
@@ -65,6 +64,7 @@ mod tests {
         ]);
         let output = conv.forward(&input);
 
-        dbg!(&output[0]);
+        assert_eq!(output.len(), 8);
+        assert_eq!(output[0].shape(), (2, 2));
     }
 }

@@ -1,4 +1,4 @@
-use crate::{randn_martix, Matrix};
+use crate::Matrix;
 
 pub struct SoftmaxLayer {
     pub weights: Matrix<f64>,
@@ -7,25 +7,22 @@ pub struct SoftmaxLayer {
 
 impl SoftmaxLayer {
     pub fn new(input_len: usize, nodes: usize) -> Self {
-        let weights = Matrix::new(randn_martix(input_len, nodes)).drivide(input_len as f64);
-        let biases = Matrix::new_zero(nodes, 1);
+        let weights = Matrix::new_randn(input_len, nodes) / input_len as f64;
+        let biases = Matrix::new_zero(1, nodes);
         SoftmaxLayer { weights, biases }
     }
 
     pub fn forward(&self, input: &Vec<Matrix<f64>>) -> Matrix<f64> {
-        let input = input
+        let input = Matrix::new(vec![input
             .clone()
             .into_iter()
             .flatten()
             .collect::<Vec<_>>()
             .into_iter()
             .flatten()
-            .collect::<Vec<_>>();
+            .collect::<Vec<_>>()]);
 
-        let totals = Matrix::new(vec![input])
-            .dot(&self.weights)
-            .add(&self.biases)
-            .exp();
-        totals
+        let totals = input * &self.weights + &self.biases;
+        totals.exp()
     }
 }

@@ -22,7 +22,6 @@ impl Matrix<f64> {
                     })
                     .collect();
                 Matrix::new(v)
-                // let slice = vec.splice(range, replace_with)
             })
             .collect()
     }

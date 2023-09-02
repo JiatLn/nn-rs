@@ -1,12 +1,12 @@
-use crate::{rand_standard_normal, Vec2};
+use crate::rand_standard_normal;
 
-pub fn zeros(size: usize) -> Vec<f64> {
-    vec![0.0; size]
+pub fn zeros(len: usize) -> Vec<f64> {
+    vec![0.0; len]
 }
 
-pub fn randn_martix(h: usize, w: usize) -> Vec2<f64> {
-    (0..h)
-        .map(|_| (0..w).map(|_| rand_standard_normal()).collect())
+pub fn randn_martix(height: usize, width: usize) -> Vec<Vec<f64>> {
+    (0..height)
+        .map(|_| (0..width).map(|_| rand_standard_normal()).collect())
         .collect()
 }
 

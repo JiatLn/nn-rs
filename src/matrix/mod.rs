@@ -3,13 +3,13 @@ mod fmt;
 mod iter;
 mod operation;
 
-use crate::{zeros, Vec2};
+use crate::{rand_standard_normal, zeros};
 
 #[derive(Clone, PartialEq, Eq)]
-pub struct Matrix<T>(pub Vec2<T>);
+pub struct Matrix<T>(pub Vec<Vec<T>>);
 
 impl<T> Matrix<T> {
-    pub fn new(vec: Vec2<T>) -> Self {
+    pub fn new(vec: Vec<Vec<T>>) -> Self {
         Matrix(vec)
     }
     /// (height, width)
@@ -25,8 +25,15 @@ impl Matrix<f64> {
     pub fn get(&self, row: usize, col: usize) -> f64 {
         self.0[row][col]
     }
-    pub fn new_zero(width: usize, height: usize) -> Self {
+    pub fn new_zero(height: usize, width: usize) -> Self {
         Matrix::new((0..height).map(|_| zeros(width)).collect())
+    }
+    pub fn new_randn(height: usize, width: usize) -> Self {
+        Matrix::new(
+            (0..height)
+                .map(|_| (0..width).map(|_| rand_standard_normal()).collect())
+                .collect(),
+        )
     }
     pub fn slice(&self, start_row: usize, start_col: usize, size: usize) -> Self {
         let mut vec = Vec::with_capacity(size);
@@ -57,7 +64,7 @@ mod tests {
 
     #[test]
     fn test_martix_new_zero() {
-        let martix = Matrix::new_zero(4, 3);
+        let martix = Matrix::new_zero(3, 4);
         assert_eq!(martix.shape(), (3, 4));
     }
 
