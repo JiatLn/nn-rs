@@ -28,6 +28,15 @@ impl Matrix<f64> {
     pub fn new_zero(height: usize, width: usize) -> Self {
         Matrix::new((0..height).map(|_| zeros(width)).collect())
     }
+    pub fn sum(&self) -> f64 {
+        let (h, w) = self.shape();
+        (0..h).fold(0.0, |acc, i| {
+            acc + (0..w).fold(0.0, |acc, j| acc + self.get(i, j))
+        })
+    }
+    pub fn flatten(&self) -> Vec<f64> {
+        self.0.clone().into_iter().flatten().collect()
+    }
     pub fn new_randn(height: usize, width: usize) -> Self {
         Matrix::new(
             (0..height)
@@ -78,5 +87,12 @@ mod tests {
         ]);
         let slice = matrix.slice(1, 0, 2);
         assert_eq!(slice.shape(), (2, 2));
+    }
+
+    #[test]
+    fn test_martix_sum() {
+        let matrix = Matrix::new(vec![vec![4.0, 3.0, 5.0], vec![6.0, 4.0, 3.0]]);
+        let sum = matrix.sum();
+        assert_eq!(sum, 25.0);
     }
 }
