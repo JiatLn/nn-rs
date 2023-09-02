@@ -4,9 +4,9 @@ pub fn zeros(size: usize) -> Vec<f64> {
     vec![0.0; size]
 }
 
-pub fn randn_martix(size: usize) -> Vec2<f64> {
-    (0..size)
-        .map(|_| (0..size).map(|_| rand_standard_normal()).collect())
+pub fn randn_martix(h: usize, w: usize) -> Vec2<f64> {
+    (0..h)
+        .map(|_| (0..w).map(|_| rand_standard_normal()).collect())
         .collect()
 }
 
@@ -22,8 +22,8 @@ mod tests {
 
     #[test]
     fn test_martix_with_randn() {
-        let vec = randn_martix(3);
+        let vec = randn_martix(3, 4);
         assert_eq!(vec.len(), 3);
-        assert_eq!(vec[0].len(), 3);
+        assert_eq!(vec[0].len(), 4);
     }
 }

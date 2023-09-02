@@ -11,7 +11,8 @@ impl ConvLayer {
     pub fn new(filter_size: usize, filter_num: usize) -> Self {
         let filters = (0..filter_num)
             .map(|_| {
-                Matrix::new(randn_martix(filter_size)).drivide((filter_size * filter_size) as f64)
+                Matrix::new(randn_martix(filter_size, filter_size))
+                    .drivide((filter_size * filter_size) as f64)
             })
             .collect();
         ConvLayer {
