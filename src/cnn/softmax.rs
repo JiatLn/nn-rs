@@ -15,9 +15,6 @@ impl SoftmaxLayer {
     pub fn forward(&self, input: &Vec<Matrix<f64>>) -> Matrix<f64> {
         let input = Matrix::new(vec![input.iter().map(|m| m.flatten()).flatten().collect()]);
 
-        dbg!(input.shape());
-        dbg!(self.weights.shape());
-
         let totals = input * &self.weights + &self.biases;
         let exp = totals.exp();
         let sum = exp.sum();
