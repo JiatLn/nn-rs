@@ -21,12 +21,15 @@ impl<T> Matrix<T> {
     pub fn set(&mut self, row: usize, col: usize, value: T) {
         self.0[row][col] = value;
     }
+    pub fn get(&self, row: usize, col: usize) -> T
+    where
+        T: Copy,
+    {
+        self.0[row][col]
+    }
 }
 
 impl Matrix<f64> {
-    pub fn get(&self, row: usize, col: usize) -> f64 {
-        self.0[row][col]
-    }
     pub fn new_zero(height: usize, width: usize) -> Self {
         Matrix::new((0..height).map(|_| zeros(width)).collect())
     }
@@ -39,33 +42,36 @@ impl Matrix<f64> {
     pub fn flatten(&self) -> Vec<f64> {
         self.0.clone().into_iter().flatten().collect()
     }
-    pub fn new_randn(height: usize, width: usize) -> Self {
+    pub fn new_randn(h: usize, w: usize) -> Self {
         Matrix::new(
-            (0..height)
-                .map(|_| (0..width).map(|_| rand_standard_normal()).collect())
+            (0..h)
+                .map(|_| (0..w).map(|_| rand_standard_normal()).collect())
                 .collect(),
         )
     }
     pub fn slice(&self, start_row: usize, start_col: usize, size: usize) -> Self {
-        let mut vec = Vec::with_capacity(size);
-        for i in start_row..start_row + size {
-            let mut row = Vec::with_capacity(size);
-            for j in start_col..start_col + size {
-                row.push(self.0[i][j]);
-            }
-            vec.push(row);
-        }
-        Matrix::new(vec)
+        Matrix::new(
+            (start_row..start_row + size)
+                .map(|i| {
+                    (start_col..start_col + size)
+                        .map(|j| self.get(i, j))
+                        .collect()
+                })
+                .collect(),
+        )
     }
     pub fn multiple_martix_sum(&self, martix: &Matrix<f64>) -> f64 {
-        let (w, h) = self.shape();
-        let mut result = 0.0;
-        for i in 0..h {
-            for j in 0..w {
-                result += self.get(i, j) * martix.get(i, j);
-            }
+        let (h1, w1) = self.shape();
+        let (h2, w2) = martix.shape();
+        if h1 != h2 || w1 != w2 {
+            panic!("shape not match");
         }
-        result
+        let m = Matrix::new(
+            (0..h1)
+                .map(|i| (0..w1).map(|j| self.get(i, j) * martix.get(i, j)).collect())
+                .collect(),
+        );
+        m.sum()
     }
 }
 

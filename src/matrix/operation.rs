@@ -34,6 +34,9 @@ impl Matrix<f64> {
     pub fn max(&self) -> f64 {
         self.0.iter().cloned().flatten().float_max()
     }
+    pub fn min(&self) -> f64 {
+        self.0.iter().cloned().flatten().float_min()
+    }
     pub fn max_index(&self) -> usize {
         let mut max_idx = 0;
         let vec = self.flatten();
@@ -46,9 +49,7 @@ impl Matrix<f64> {
         }
         max_idx
     }
-    pub fn min(&self) -> f64 {
-        self.0.iter().cloned().flatten().float_min()
-    }
+
     /// <https://www.w3.org/TR/css-color-4/multiply-matrices.js>
     ///
     /// a is m x n. b is n x p. product is m x p.
@@ -186,7 +187,7 @@ impl Add for Matrix<f64> {
     fn add(self, other: Self) -> Self {
         let (h1, w1) = self.shape();
         let (h2, w2) = other.shape();
-        if w1 != w2 && h1 != h2 {
+        if w1 != w2 || h1 != h2 {
             panic!("m1 shape != m2 shape")
         }
         Matrix::new(
@@ -216,15 +217,15 @@ impl Mul<Matrix<f64>> for Matrix<f64> {
 impl Add<&Matrix<f64>> for Matrix<f64> {
     type Output = Matrix<f64>;
 
-    fn add(self, other: &Matrix<f64>) -> Matrix<f64> {
+    fn add(self, rhs: &Matrix<f64>) -> Matrix<f64> {
         let (h1, w1) = self.shape();
-        let (h2, w2) = other.shape();
-        if w1 != w2 && h1 != h2 {
+        let (h2, w2) = rhs.shape();
+        if w1 != w2 || h1 != h2 {
             panic!("m1 shape != m2 shape")
         }
         Matrix::new(
             (0..h1)
-                .map(|i| (0..w1).map(|j| self.get(i, j) + other.get(i, j)).collect())
+                .map(|i| (0..w1).map(|j| self.get(i, j) + rhs.get(i, j)).collect())
                 .collect(),
         )
     }
@@ -233,15 +234,15 @@ impl Add<&Matrix<f64>> for Matrix<f64> {
 impl Sub<&Matrix<f64>> for Matrix<f64> {
     type Output = Matrix<f64>;
 
-    fn sub(self, other: &Matrix<f64>) -> Matrix<f64> {
+    fn sub(self, rhs: &Matrix<f64>) -> Matrix<f64> {
         let (h1, w1) = self.shape();
-        let (h2, w2) = other.shape();
-        if w1 != w2 && h1 != h2 {
+        let (h2, w2) = rhs.shape();
+        if w1 != w2 || h1 != h2 {
             panic!("m1 shape != m2 shape")
         }
         Matrix::new(
             (0..h1)
-                .map(|i| (0..w1).map(|j| self.get(i, j) - other.get(i, j)).collect())
+                .map(|i| (0..w1).map(|j| self.get(i, j) - rhs.get(i, j)).collect())
                 .collect(),
         )
     }
@@ -251,7 +252,7 @@ impl SubAssign<Matrix<f64>> for Matrix<f64> {
     fn sub_assign(&mut self, rhs: Matrix<f64>) {
         let (h1, w1) = self.shape();
         let (h2, w2) = rhs.shape();
-        if w1 != w2 && h1 != h2 {
+        if w1 != w2 || h1 != h2 {
             panic!("m1 shape != m2 shape")
         }
         self.0 = (0..h1)
@@ -264,7 +265,7 @@ impl AddAssign<Matrix<f64>> for Matrix<f64> {
     fn add_assign(&mut self, rhs: Matrix<f64>) {
         let (h1, w1) = self.shape();
         let (h2, w2) = rhs.shape();
-        if w1 != w2 && h1 != h2 {
+        if w1 != w2 || h1 != h2 {
             panic!("m1 shape != m2 shape")
         }
         self.0 = (0..h1)
@@ -276,15 +277,15 @@ impl AddAssign<Matrix<f64>> for Matrix<f64> {
 impl Sub<Matrix<f64>> for Matrix<f64> {
     type Output = Matrix<f64>;
 
-    fn sub(self, other: Matrix<f64>) -> Matrix<f64> {
+    fn sub(self, rhs: Matrix<f64>) -> Matrix<f64> {
         let (h1, w1) = self.shape();
-        let (h2, w2) = other.shape();
+        let (h2, w2) = rhs.shape();
         if w1 != w2 || h1 != h2 {
             panic!("m1 shape != m2 shape")
         }
         Matrix::new(
             (0..h1)
-                .map(|i| (0..w1).map(|j| self.get(i, j) - other.get(i, j)).collect())
+                .map(|i| (0..w1).map(|j| self.get(i, j) - rhs.get(i, j)).collect())
                 .collect(),
         )
     }
