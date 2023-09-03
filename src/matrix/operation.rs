@@ -34,6 +34,18 @@ impl Matrix<f64> {
     pub fn max(&self) -> f64 {
         self.0.iter().cloned().flatten().float_max()
     }
+    pub fn max_index(&self) -> usize {
+        let mut max_idx = 0;
+        let vec = self.flatten();
+        let mut max = vec[0];
+        for i in 1..vec.len() {
+            if vec[i] > max {
+                max = vec[i];
+                max_idx = i;
+            }
+        }
+        max_idx
+    }
     pub fn min(&self) -> f64 {
         self.0.iter().cloned().flatten().float_min()
     }

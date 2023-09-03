@@ -8,7 +8,7 @@ impl MaxPoolLayer {
     pub fn new(size: usize) -> Self {
         MaxPoolLayer { size }
     }
-    pub fn forward(self, input: &Vec<Matrix<f64>>) -> Vec<Matrix<f64>> {
+    pub fn forward(&self, input: &Vec<Matrix<f64>>) -> Vec<Matrix<f64>> {
         let filter_num = input.len();
         let (h, w) = input[0].shape();
 
