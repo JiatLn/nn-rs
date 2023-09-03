@@ -2,15 +2,21 @@ use crate::Matrix;
 
 pub struct MaxPoolLayer {
     size: usize,
+    last_input: Vec<Matrix<f64>>,
 }
 
 impl MaxPoolLayer {
     pub fn new(size: usize) -> Self {
-        MaxPoolLayer { size }
+        MaxPoolLayer {
+            size,
+            last_input: vec![],
+        }
     }
-    pub fn forward(&self, input: &Vec<Matrix<f64>>) -> Vec<Matrix<f64>> {
+    pub fn forward(&mut self, input: &Vec<Matrix<f64>>) -> Vec<Matrix<f64>> {
         let filter_num = input.len();
         let (h, w) = input[0].shape();
+
+        self.last_input = input.clone();
 
         if w % 2 != 0 || h % 2 != 0 {
             panic!("weight & height size must be even")
@@ -33,6 +39,42 @@ impl MaxPoolLayer {
         }
         output
     }
+
+    pub fn backprop(&mut self, d_l_d_out: &Vec<Matrix<f64>>) -> Vec<Matrix<f64>> {
+        // d_L_d_input = np.zeros(self.last_input.shape)
+        let n = self.last_input.len();
+        assert!(n > 0);
+        let (h, w) = self.last_input[0].shape();
+
+        let mut d_l_d_input = (0..n).map(|_| Matrix::new_zero(h, w)).collect::<Vec<_>>();
+
+        for filter_idx in 0..n {
+            for i in 0..h / 2 {
+                for j in 0..w / 2 {
+                    let slice_martix =
+                        self.last_input[filter_idx].slice(i * self.size, j * self.size, self.size);
+
+                    let max = slice_martix.max();
+                    let (h, w) = slice_martix.shape();
+                    for i2 in 0..h {
+                        for j2 in 0..w {
+                            for k in 0..n {
+                                if slice_martix.get(i2, j2) == max {
+                                    d_l_d_input[k].set(
+                                        i * 2 + i2,
+                                        j * 2 + j2,
+                                        d_l_d_out[k].get(i, j),
+                                    );
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        d_l_d_input
+    }
 }
 
 #[cfg(test)]
@@ -42,7 +84,7 @@ mod tests {
 
     #[test]
     fn test_maxpool_2x2() {
-        let maxpool = MaxPoolLayer::new(2);
+        let mut maxpool = MaxPoolLayer::new(2);
 
         assert_eq!(maxpool.size, 2);
 

@@ -9,7 +9,7 @@ fn test_conv() {
     assert_eq!(train_data.len(), 50_000);
     assert_eq!(train_data[0].shape(), (28, 28));
 
-    let conv = ConvLayer::new(3, 8);
+    let mut conv = ConvLayer::new(3, 8);
     let output = conv.forward(&train_data[0]);
 
     assert_eq!(output.len(), 8);

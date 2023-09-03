@@ -2,10 +2,11 @@ mod constructors;
 mod fmt;
 mod iter;
 mod operation;
+mod transpose;
 
 use crate::{rand_standard_normal, zeros};
 
-#[derive(Clone, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq, Default)]
 pub struct Matrix<T>(pub Vec<Vec<T>>);
 
 impl<T> Matrix<T> {
@@ -14,6 +15,7 @@ impl<T> Matrix<T> {
     }
     /// (height, width)
     pub fn shape(&self) -> (usize, usize) {
+        assert!(!self.0.is_empty());
         (self.0.len(), self.0[0].len())
     }
     pub fn set(&mut self, row: usize, col: usize, value: T) {

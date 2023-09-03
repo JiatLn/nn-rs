@@ -5,6 +5,7 @@ pub struct ConvLayer {
     filter_size: usize,
     filter_num: usize,
     filters: Vec<Matrix<f64>>,
+    last_input: Matrix<f64>,
 }
 
 impl ConvLayer {
@@ -19,17 +20,19 @@ impl ConvLayer {
             filter_size,
             filter_num,
             filters,
+            last_input: Matrix::default(),
         }
     }
 
-    pub fn forward(&self, input: &Matrix<f64>) -> Vec<Matrix<f64>> {
+    pub fn forward(&mut self, input: &Matrix<f64>) -> Vec<Matrix<f64>> {
         let (h, w) = input.shape();
         if h < 2 || w < 2 {
             panic!("The input shape must be greater then 2x2");
         }
-        let mut output: Vec<_> = (0..self.filter_num)
+        self.last_input = input.clone();
+        let mut output = (0..self.filter_num)
             .map(|_| Matrix::new_zero(h - 2, w - 2))
-            .collect();
+            .collect::<Vec<_>>();
 
         for i in 0..h - 2 {
             for j in 0..w - 2 {
@@ -43,6 +46,27 @@ impl ConvLayer {
         }
         output
     }
+
+    pub fn backprop(&mut self, d_l_d_out: &Vec<Matrix<f64>>, lr: f64) -> () {
+        let mut d_l_d_filters = (0..self.filter_num)
+            .map(|_| Matrix::new_zero(self.filter_size, self.filter_size))
+            .collect::<Vec<_>>();
+
+        let (h, w) = self.last_input.shape();
+
+        for i in 0..h - 2 {
+            for j in 0..w - 2 {
+                let slice_martix = self.last_input.slice(i, j, self.filter_size);
+                for k in 0..self.filter_num {
+                    d_l_d_filters[k] += &slice_martix * d_l_d_out[k].get(i, j);
+                }
+            }
+        }
+
+        self.filters = (0..self.filter_num)
+            .map(|i| self.filters[i].clone() - d_l_d_filters[i].clone() * lr)
+            .collect::<Vec<_>>();
+    }
 }
 
 #[cfg(test)]
@@ -51,7 +75,7 @@ mod tests {
 
     #[test]
     fn test_conv_3x3() {
-        let conv = ConvLayer::new(3, 8);
+        let mut conv = ConvLayer::new(3, 8);
 
         assert_eq!(conv.filter_num, 8);
         assert_eq!(conv.filters[0].shape(), (3, 3));
