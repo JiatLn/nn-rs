@@ -76,6 +76,6 @@ impl SoftmaxLayer {
             self.weights -= d_l_d_w * lr;
             self.biases -= d_l_d_b * lr;
         }
-        Matrix::from_shape_vec64(&d_l_d_inputs.flatten(), self.last_input_shape)
+        Matrix::from_shape_vec(&d_l_d_inputs.flatten(), self.last_input_shape)
     }
 }

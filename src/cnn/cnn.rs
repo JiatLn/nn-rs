@@ -32,8 +32,7 @@ impl CNN {
         }
     }
     fn forward(&mut self, image: &Matrix<f64>, label: usize) -> CNNOutput {
-        let input = image.clone() / 255.0 - 0.5;
-        let out = self.conv.forward(&input);
+        let out = self.conv.forward(&image);
         let out = self.maxpool.forward(&out);
         let out = self.softmax.forward(&out);
 
