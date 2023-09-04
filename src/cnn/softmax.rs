@@ -1,4 +1,4 @@
-use crate::Matrix;
+use crate::{softmax, Matrix};
 
 pub struct SoftmaxLayer {
     pub weights: Matrix<f64>,
@@ -34,9 +34,7 @@ impl SoftmaxLayer {
 
         self.last_totals = totals.clone();
 
-        let exp = totals.exp(); // shape (1, 10)
-        let sum = exp.sum();
-        exp / sum
+        softmax(&totals)
     }
 
     /// lr means learn rate

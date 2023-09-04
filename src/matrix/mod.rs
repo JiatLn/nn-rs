@@ -90,6 +90,10 @@ mod tests {
         let matrix = Matrix::new(vec![vec![4.0, 3.0, 5.0], vec![6.0, 4.0, 3.0]]);
         let sum = matrix.sum();
         assert_eq!(sum, 25.0);
+
+        let matrix = Matrix::new(vec![vec![4.0, 3.0, 5.0]]);
+        let sum = matrix.sum();
+        assert_eq!(sum, 12.0);
     }
 
     #[test]
