@@ -1,7 +1,15 @@
+mod add;
 mod constructors;
+mod div;
+mod dot;
+mod exp;
 mod fmt;
 mod iter;
-mod operation;
+mod minmax;
+mod mul;
+mod neg;
+mod slice;
+mod sub;
 mod transpose;
 
 use crate::{rand_standard_normal, zeros};
@@ -15,8 +23,11 @@ impl<T> Matrix<T> {
     }
     /// (height, width)
     pub fn shape(&self) -> (usize, usize) {
-        assert!(!self.0.is_empty());
-        (self.0.len(), self.0[0].len())
+        if self.0.is_empty() {
+            (0, 0)
+        } else {
+            (self.0.len(), self.0[0].len())
+        }
     }
     pub fn set(&mut self, row: usize, col: usize, value: T) {
         self.0[row][col] = value;
@@ -49,17 +60,6 @@ impl Matrix<f64> {
                 .collect(),
         )
     }
-    pub fn slice(&self, start_row: usize, start_col: usize, size: usize) -> Self {
-        Matrix::new(
-            (start_row..start_row + size)
-                .map(|i| {
-                    (start_col..start_col + size)
-                        .map(|j| self.get(i, j))
-                        .collect()
-                })
-                .collect(),
-        )
-    }
     pub fn multiple_martix_sum(&self, martix: &Matrix<f64>) -> f64 {
         let (h1, w1) = self.shape();
         let (h2, w2) = martix.shape();
@@ -86,21 +86,21 @@ mod tests {
     }
 
     #[test]
-    fn test_martix_slice() {
-        let matrix = Matrix::new(vec![
-            vec![4.0, 3.0, 2.0, 1.0],
-            vec![5.0, 3.0, 6.0, 4.0],
-            vec![1.0, 2.0, 4.0, 3.0],
-            vec![6.0, 8.0, 7.0, 9.0],
-        ]);
-        let slice = matrix.slice(1, 0, 2);
-        assert_eq!(slice.shape(), (2, 2));
-    }
-
-    #[test]
     fn test_martix_sum() {
         let matrix = Matrix::new(vec![vec![4.0, 3.0, 5.0], vec![6.0, 4.0, 3.0]]);
         let sum = matrix.sum();
         assert_eq!(sum, 25.0);
+    }
+
+    #[test]
+    fn test_martix_shape() {
+        let m: Matrix<f64> = Matrix::new(vec![]);
+        assert_eq!(m.shape(), (0, 0));
+
+        let m: Matrix<f64> = Matrix::new(vec![vec![]]);
+        assert_eq!(m.shape(), (1, 0));
+
+        let m = Matrix::new(vec![vec![4.0, 3.0, 5.0], vec![6.0, 4.0, 3.0]]);
+        assert_eq!(m.shape(), (2, 3));
     }
 }

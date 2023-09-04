@@ -58,7 +58,7 @@ impl ConvLayer {
             for j in 0..w - 2 {
                 let slice_martix = self.last_input.slice(i, j, self.filter_size);
                 for k in 0..self.filter_num {
-                    d_l_d_filters[k] += &slice_martix * d_l_d_out[k].get(i, j);
+                    d_l_d_filters[k] += slice_martix.clone() * d_l_d_out[k].get(i, j);
                 }
             }
         }

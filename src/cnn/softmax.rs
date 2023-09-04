@@ -30,7 +30,7 @@ impl SoftmaxLayer {
 
         self.last_input = input.clone();
 
-        let totals = input * &self.weights + &self.biases;
+        let totals = input * self.weights.clone() + self.biases.clone();
 
         self.last_totals = totals.clone();
 
@@ -71,7 +71,7 @@ impl SoftmaxLayer {
 
             // Gradients of loss against weights/biases/input
             let d_l_d_w = d_t_d_w.transpose().dot(&d_l_d_t);
-            let d_l_d_b = &d_l_d_t * d_t_d_b;
+            let d_l_d_b = d_l_d_t.clone() * d_t_d_b;
             d_l_d_inputs = d_t_d_inputs.dot(&d_l_d_t.transpose());
 
             // Update weights / biases

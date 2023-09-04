@@ -29,5 +29,6 @@ mod tests {
         let m2 = m1.transpose();
 
         assert_eq!(m2.shape(), (3, 2));
+        assert_eq!(m2.0, vec![vec![1.0, 4.0], vec![2.0, 5.0], vec![3.0, 6.0]]);
     }
 }
